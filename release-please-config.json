@@ -7,8 +7,8 @@
       "changelog-path": "CHANGELOG.md",
       "extra-files": [
         {
-          "path": "ConsoleExperienceClassic.toc",
-          "updater": "./toc-updater.js"
+          "type": "generic",
+          "path": "ConsoleExperienceClassic.toc"
         }
       ]
     }
