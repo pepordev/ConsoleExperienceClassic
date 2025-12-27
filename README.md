@@ -6,7 +6,7 @@ A comprehensive controller-style interface addon for World of Warcraft: Vanilla 
 
 ## Overview
 
-ConsoleExperience Classic provides a complete controller-friendly interface for WoW Vanilla, featuring gamepad-style action bars, cursor navigation, radial menus, and extensive customization options. The addon enables players to enjoy World of Warcraft with a controller or keyboard-only navigation system.
+ConsoleExperience Classic provides a complete controller-friendly interface for WoW Vanilla, featuring gamepad-style action bars, cursor navigation, radial menus, virtual keyboard, and extensive customization options. The addon enables players to enjoy World of Warcraft with a controller or keyboard-only navigation system, making it perfect for couch gaming or accessibility needs.
 
 ## Features
 
@@ -42,6 +42,18 @@ ConsoleExperience Classic provides a complete controller-friendly interface for 
 - **Toggle Binding**: Accessible via SHIFT+ESCAPE
 
 ![Radial Menu](docs/images/menu.png)
+![Radial Menu Detail](docs/images/radial.png)
+
+### ⌨️ Virtual Keyboard
+- **Full QWERTY Layout**: Complete virtual keyboard with all standard keys
+- **Automatic Activation**: Appears automatically when chat edit box is visible
+- **Controller Navigation**: Navigate keys using D-pad, select with A button
+- **Shift Mode**: Toggle between lowercase and uppercase characters
+- **Smart Positioning**: Keyboard occupies lower 48% of screen for optimal visibility
+- **Visual Feedback**: Highlighted keys show current selection
+- **Text Preview**: Real-time text preview in integrated edit box
+
+![Virtual Keyboard](docs/images/keyboard.png)
 
 ### ⌨️ Keybinding Management
 - **Default Bindings**: Pre-configured bindings for controller-style gameplay
@@ -56,7 +68,8 @@ ConsoleExperience Classic provides a complete controller-friendly interface for 
 - **Debug Mode**: Optional debug output for troubleshooting
 
 ### 📝 Macro Management
-- **Default Macros**: Pre-configured macros for common actions (Target Nearest Enemy)
+- **Default Macros**: Pre-configured macros for common actions
+- **CE_Interact Macro**: Interact with nearest target/object (requires Interact.dll for a full integration (autoloot, skineables, etc.))
 - **Auto-Placement**: Macros automatically placed on action bars
 - **Reset Function**: Restore default macros with one click
 
@@ -74,11 +87,29 @@ ConsoleExperience Classic provides a complete controller-friendly interface for 
 4. Restart World of Warcraft
 5. Enable the addon in the character selection screen
 
+### Optional: Install Interact.dll (Recommended)
+
+For full functionality of the `CE_Interact` macro (interact with nearest target/object), it's recommended to install the [Interact.dll](https://github.com/luskanek/Interact) mod:
+
+1. Download the latest release from [Interact repository](https://github.com/luskanek/Interact)
+2. Extract `Interact.dll` from the `.zip` file to your World of Warcraft root folder (the same folder where `WoW.exe` is located)
+
+**If your launcher handles mods automatically**, you're done! Configure the launcher to load the DLL.
+
+**If you're launching the game directly with VanillaFixes.exe** (launcher doesn't handle mods), complete these additional steps:
+
+3. Open `dlls.txt` in your World of Warcraft folder (included with VanillaFixes)
+4. Add `Interact.dll` on a new line at the end of the file
+5. Save and close the file
+6. Launch the game using `VanillaFixes.exe`
+
+**Note**: The `CE_Interact` macro will still work without Interact.dll, but will fall back to `TargetNearestEnemy()` instead of interacting with objects.
+
 ## Usage
 
 ### Steam Input Setup
 
-**Important**: For the best experience, use the **"WoW Vanilla Console experience by p3p0 v1"** Steam Input distribution.
+**Important**: For the best experience, use the **"WoW Vanilla Console experience by p3p0 v1.1"** Steam Input distribution.
 
 1. Launch World of Warcraft through Steam
 2. Open Steam Big Picture mode or Steam overlay
@@ -91,13 +122,16 @@ ConsoleExperience Classic provides a complete controller-friendly interface for 
 
 ### Basic Controls
 
-- **D-Pad**: Navigate UI elements and move cursor
-- **A Button**: Confirm/Click/Place items
-- **B Button**: Cancel/Back/Clear slots
+- **D-Pad**: Navigate UI elements, move cursor, and navigate virtual keyboard
+- **A Button**: Confirm/Click/Place items, select keyboard keys
+- **B Button**: Cancel/Back/Clear slots, close menus
 - **X Button**: Pickup items/spells
 - **Y Button**: Additional actions (context-dependent)
 - **LT/RT**: Modifier keys for additional action bar pages
-- **SHIFT+ESCAPE**: Toggle radial menu
+- **LB**: Interact with nearest target/object (CE_Interact macro)
+- **LT+MENU**: Toggle radial menu
+- **LT(virtual keyboard)**: Toggle keyboard shift mode (uppercase/lowercase)
+- **RT(virtual keyboard)**: Send text
 
 ### Opening Configuration
 
@@ -128,6 +162,18 @@ When UI frames are open (Character, Spellbook, Bags, etc.), the cursor navigatio
 6. Press A button to place
 7. Press B button on a slot to clear it
 
+### Using the Virtual Keyboard
+
+1. Open chat by pressing Enter, clicking the chat input box or accesing from the radial menu
+2. The virtual keyboard will automatically appear in the lower half of the screen
+3. Navigate keys using the D-pad
+4. Press A button to type the selected key
+5. Press LT to toggle between lowercase and uppercase
+6. Press B button or Escape to close the keyboard and cancel typing
+7. Press RT to send the message
+
+The keyboard supports full QWERTY layout including numbers, letters, and common punctuation marks.
+
 ## Roadmap
 
 ### Planned Features
@@ -149,7 +195,9 @@ Your support helps maintain and improve the addon!
 
 - **WoW Version**: Vanilla (1.12.1)
 - **Dependencies**: None (standalone addon)
+- **Optional Dependencies**: [Interact.dll](https://github.com/luskanek/Interact) for full CE_Interact macro functionality
 - **Saved Variables**: Per-character configuration storage
+- **Steam Input**: Compatible with Steam Input configurations for controller support
 
 ## Contributing
 
@@ -159,7 +207,10 @@ Contributions are welcome! Please feel free to submit issues, feature requests, 
 
 - **Author**: pepordev
 - **Version**: 0.0.1
-- **Special Thanks**: @luskanek for his support, help and guidance, the rest of the addon developer community, and the user community for feedback and testing
+- **Special Thanks**: 
+  - @luskanek for his support, help, guidance and the awesome Interact addon
+  - @Shagu for being an inspiration
+  - The rest of the addon developer community, and the user community for feedback and testing
 
 
 **Note**: This addon is designed specifically for World of Warcraft: Vanilla (1.12.1). It may not work correctly with other WoW versions or private server modifications.
