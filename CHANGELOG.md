@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.0](https://github.com/pepordev/ConsoleExperienceClassic/compare/v0.2.1...v0.3.0) (2025-12-28)
+
+
+### Features
+
+* add keyboard support for textboxes ([a1fb9e8](https://github.com/pepordev/ConsoleExperienceClassic/commit/a1fb9e806d516d5808cbe8dbe37c7fb560562b64))
+* add support for aution house frame ([34d4ba4](https://github.com/pepordev/ConsoleExperienceClassic/commit/34d4ba4bc09afd3c30bf426f64aa1a8989552455))
+
 ## [0.2.1](https://github.com/pepordev/ConsoleExperienceClassic/compare/v0.2.0...v0.2.1) (2025-12-28)
 
 
