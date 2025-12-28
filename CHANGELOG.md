@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/pepordev/ConsoleExperienceClassic/compare/v0.2.0...v0.2.1) (2025-12-28)
+
+
+### Bug Fixes
+
+* correct cursor actions ([97d091c](https://github.com/pepordev/ConsoleExperienceClassic/commit/97d091cfae82aa2419eebe7a96dd6c6af35f3841))
+
 ## [0.2.0](https://github.com/pepordev/ConsoleExperienceClassic/compare/v0.1.1...v0.2.0) (2025-12-28)
 
 
