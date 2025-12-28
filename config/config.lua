@@ -904,9 +904,13 @@ function Config:CreateChatSection()
     keyboardCheck:SetPoint("TOPLEFT", chatHeightLabel, "BOTTOMLEFT", 0, -15)
     keyboardCheck:SetChecked(Config:Get("keyboardEnabled"))
     keyboardCheck:SetScript("OnClick", function()
-        local checked = keyboardCheck:GetChecked()
+        local checked = keyboardCheck:GetChecked() == 1
         Config:Set("keyboardEnabled", checked)
         CE_Debug("Virtual keyboard " .. (checked and "enabled" or "disabled"))
+        -- If keyboard is disabled and currently visible, hide it immediately
+        if not checked and ConsoleExperience.keyboard and ConsoleExperience.keyboard:IsVisible() then
+            ConsoleExperience.keyboard:Hide()
+        end
     end)
     
     -- Refresh checkbox state when section is shown
@@ -1311,6 +1315,22 @@ function Config:UpdateActionBarLayout()
                 local iconSize = math.max(12, buttonSize / 2)
                 controllerIcon:SetWidth(iconSize)
                 controllerIcon:SetHeight(iconSize)
+            end
+            
+            -- Update cooldown to match button size using scale
+            -- Default cooldown size in WoW is typically 36 pixels
+            -- Scale it to match buttonSize, then anchor it to fill the button
+            local cooldown = getglobal(button:GetName() .. "Cooldown")
+            if cooldown then
+                local defaultCooldownSize = 36
+                local scaleFactor = buttonSize / defaultCooldownSize
+                
+                -- Scale the cooldown to match button size
+                cooldown:SetScale(scaleFactor)
+                cooldown:ClearAllPoints()
+                -- Use TOPLEFT/BOTTOMRIGHT to fill the button area
+                cooldown:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0)
+                cooldown:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0)
             end
         end
     end
