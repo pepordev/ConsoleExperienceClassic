@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.1](https://github.com/pepordev/ConsoleExperienceClassic/compare/v0.1.0...v0.1.1) (2025-12-28)
+
+
+### Bug Fixes
+
+* correct cooldown overlay and A behavior ([7e0bca5](https://github.com/pepordev/ConsoleExperienceClassic/commit/7e0bca589e6fc5ce8fad665f513955e062fbf555))
+* correct keyboard toggle ([c8b47fb](https://github.com/pepordev/ConsoleExperienceClassic/commit/c8b47fb7ca7ccadd979cffe637d35a78edde321c))
+
 ## [0.1.0](https://github.com/pepordev/ConsoleExperienceClassic/compare/v0.0.1...v0.1.0) (2025-12-27)
 
 
