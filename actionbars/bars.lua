@@ -68,6 +68,44 @@ function ActionBars:Initialize()
     self:CreateModifierFrame()
     self:UpdateAllButtons()
     self:InitializeBagBar()
+    self:HookCooldownFrame()
+end
+
+-- Hook CooldownFrame_SetTimer to ensure cooldowns match button size
+function ActionBars:HookCooldownFrame()
+    if not self.cooldownHookSet then
+        -- Store original function
+        local originalSetTimer = CooldownFrame_SetTimer
+        -- Replace with our version that calls original then resizes
+        CooldownFrame_SetTimer = function(cooldown, start, duration, enable)
+            -- Call original function first
+            originalSetTimer(cooldown, start, duration, enable)
+            
+            -- Resize cooldown if it belongs to one of our action buttons
+            if cooldown and cooldown:GetParent() then
+                local parent = cooldown:GetParent()
+                local parentName = parent:GetName() or ""
+                if string.find(parentName, "ConsoleActionButton") then
+                    -- Get button size (this is the actual button size from config)
+                    local buttonWidth = parent:GetWidth()
+                    -- Default cooldown size in WoW is typically 36
+                    local defaultCooldownSize = 36
+                    
+                    -- Calculate scale factor to match button size
+                    if buttonWidth > 0 then
+                        local scaleFactor = buttonWidth / defaultCooldownSize
+                        cooldown:SetScale(scaleFactor)
+                        -- Use TOPLEFT/BOTTOMRIGHT to fill the button area
+                        -- Small offsets to account for cooldown frame template behavior
+                        cooldown:ClearAllPoints()
+                        cooldown:SetPoint("TOPLEFT", parent, "TOPLEFT", 0, 0)
+                        cooldown:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", 0, 0)
+                    end
+                end
+            end
+        end
+        self.cooldownHookSet = true
+    end
 end
 
 function ActionBars:OnPlayerEnteringWorld()
@@ -205,6 +243,8 @@ function ActionBars:ButtonOnLoad(button)
     local cooldown = getglobal(cooldownName)
     if not cooldown then
         cooldown = CreateFrame("Model", cooldownName, button, "CooldownFrameTemplate")
+        -- Cooldown will be sized in UpdateActionBarLayout to match button
+        -- Use SetAllPoints to fill the button
         cooldown:SetAllPoints(button)
     end
     
@@ -270,6 +310,9 @@ function ActionBars:UpdateButton(button)
         button:SetNormalTexture("Interface\\Buttons\\UI-Quickslot2")
         button.isSpecialBinding = specialBinding
         cooldown:Hide()
+        -- Stop any flashing/glow effects since this is a special binding, not an action
+        self:StopFlash(button)
+        button:SetChecked(0)
     elseif texture then
         icon:SetTexture(texture)
         icon:Show()
@@ -293,10 +336,13 @@ function ActionBars:UpdateButton(button)
     -- Always keep button visible so we can drop actions onto it
     button:Show()
     
-    -- Update equipped border
+    -- Update equipped border (only if not a special binding)
     local border = getglobal(button:GetName().."Border")
     if border then
-        if IsEquippedAction(actionID) then
+        if button.isSpecialBinding then
+            -- Hide border for special bindings
+            border:Hide()
+        elseif IsEquippedAction(actionID) then
             border:SetVertexColor(0, 1.0, 0, 0.35)
             border:Show()
         else
@@ -358,6 +404,21 @@ function ActionBars:UpdateButtonCooldown(button)
     local cooldown = getglobal(button:GetName().."Cooldown")
     local start, duration, enable = GetActionCooldown(actionID)
     CooldownFrame_SetTimer(cooldown, start, duration, enable)
+    
+    -- Ensure cooldown matches button size after timer is set
+    -- The hook will also handle this, but we do it here too for immediate update
+    if cooldown and button then
+        local buttonSize = button:GetWidth()
+        local defaultCooldownSize = 36
+        if buttonSize > 0 then
+            local scaleFactor = buttonSize / defaultCooldownSize
+            cooldown:SetScale(scaleFactor)
+            cooldown:ClearAllPoints()
+            -- Use TOPLEFT/BOTTOMRIGHT to fill the button area
+            cooldown:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0)
+            cooldown:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0)
+        end
+    end
 end
 
 function ActionBars:UpdateButtonCount(button)
@@ -407,6 +468,9 @@ end
 function ActionBars:ButtonOnEvent(button, event)
     local actionID = self:GetActionID(button)
     
+    -- Skip action-related updates if button has a special binding (like JUMP)
+    local hasSpecialBinding = button.isSpecialBinding ~= nil
+    
     if event == "PLAYER_ENTERING_WORLD" then
         self:UpdateButton(button)
     elseif event == "ACTIONBAR_SLOT_CHANGED" then
@@ -422,30 +486,36 @@ function ActionBars:ButtonOnEvent(button, event)
             end
         end
     elseif event == "ACTIONBAR_UPDATE_STATE" then
-        self:UpdateButtonState(button)
+        if not hasSpecialBinding then
+            self:UpdateButtonState(button)
+        end
     elseif event == "ACTIONBAR_UPDATE_USABLE" or event == "UPDATE_INVENTORY_ALERTS" or event == "ACTIONBAR_UPDATE_COOLDOWN" then
-        self:UpdateButtonCooldown(button)
+        if not hasSpecialBinding then
+            self:UpdateButtonCooldown(button)
+        end
     elseif event == "PLAYER_TARGET_CHANGED" or event == "PLAYER_AURAS_CHANGED" then
         self:UpdateButton(button)
-        self:UpdateButtonState(button)
+        if not hasSpecialBinding then
+            self:UpdateButtonState(button)
+        end
     elseif event == "UNIT_INVENTORY_CHANGED" then
         if arg1 == "player" then
             self:UpdateButton(button)
         end
     elseif event == "PLAYER_ENTER_COMBAT" then
-        if IsAttackAction(actionID) then
+        if not hasSpecialBinding and IsAttackAction(actionID) then
             self:StartFlash(button)
         end
     elseif event == "PLAYER_LEAVE_COMBAT" then
-        if IsAttackAction(actionID) then
+        if not hasSpecialBinding and IsAttackAction(actionID) then
             self:StopFlash(button)
         end
     elseif event == "START_AUTOREPEAT_SPELL" then
-        if IsAutoRepeatAction(actionID) then
+        if not hasSpecialBinding and IsAutoRepeatAction(actionID) then
             self:StartFlash(button)
         end
     elseif event == "STOP_AUTOREPEAT_SPELL" then
-        if self:IsFlashing(button) and not IsAttackAction(actionID) then
+        if not hasSpecialBinding and self:IsFlashing(button) and not IsAttackAction(actionID) then
             self:StopFlash(button)
         end
     end
@@ -458,8 +528,15 @@ end
 function ActionBars:ButtonOnUpdate(button, elapsed)
     local actionID = self:GetActionID(button)
     
-    -- Handle flashing (attack/auto-repeat)
-    if self:IsFlashing(button) then
+    -- Don't flash if button has a special binding (like JUMP)
+    if button.isSpecialBinding then
+        if self:IsFlashing(button) then
+            self:StopFlash(button)
+        end
+    end
+    
+    -- Handle flashing (attack/auto-repeat) - skip if special binding
+    if not button.isSpecialBinding and self:IsFlashing(button) then
         button.flashtime = button.flashtime - elapsed
         if button.flashtime <= 0 then
             local overtime = -button.flashtime
