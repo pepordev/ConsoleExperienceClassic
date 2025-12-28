@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/pepordev/ConsoleExperienceClassic/compare/v0.1.1...v0.2.0) (2025-12-28)
+
+
+### Features
+
+* added emotes keyboard and fix command handling ([637ac5c](https://github.com/pepordev/ConsoleExperienceClassic/commit/637ac5cfd5d8e2a5a7af158a4584c079205e8a17))
+
 ## [0.1.1](https://github.com/pepordev/ConsoleExperienceClassic/compare/v0.1.0...v0.1.1) (2025-12-28)
 
 
