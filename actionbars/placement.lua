@@ -499,29 +499,15 @@ end
 -- ============================================================================
 
 function Placement:Initialize()
-    -- Create event frame to watch for cursor changes
-    if not self.eventFrame then
-        self.eventFrame = CreateFrame("Frame", "CEPlacementEventFrame")
-        self.eventFrame:RegisterEvent("CURSOR_UPDATE")
-        self.eventFrame:SetScript("OnEvent", function()
-            Placement:OnCursorUpdate()
-        end)
-    end
+    -- Event frame creation removed - placement frame now only shows manually
+    -- Auto-show on cursor update has been disabled
+    -- Frame can only be opened from config menu or via Placement:Show() explicitly
     
     CE_Debug("Placement module initialized")
 end
 
-function Placement:OnCursorUpdate()
-    -- Check if cursor has spell/item and placement frame is not shown
-    if CursorHasSpell() or CursorHasItem() then
-        if not self:IsShown() then
-            self:Show()
-        end
-    else
-        -- Cursor is empty, hide placement frame if no active interaction
-        -- Don't auto-hide if user manually opened it
-    end
-end
+-- Removed OnCursorUpdate() - placement frame no longer auto-shows on item pickup
+-- Frame must be manually opened from config menu
 
 -- Module loaded
 CE_Debug("Placement module loaded")

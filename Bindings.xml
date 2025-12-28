@@ -50,6 +50,7 @@
     <Binding name="CE_CURSOR_CLICK_LEFT">CE_ClickCursor("LeftButton")</Binding>
     <Binding name="CE_CURSOR_CLICK_RIGHT">CE_ClickCursor("RightButton")</Binding>
     <Binding name="CE_CURSOR_PICKUP">CE_PickupItem()</Binding>
+    <Binding name="CE_CURSOR_BIND">CE_Bind()</Binding>
     <Binding name="CE_CURSOR_DELETE">CE_DeleteItem()</Binding>
     <Binding name="CE_CURSOR_UNEQUIP">CE_UnequipItem()</Binding>
     <Binding name="CE_CURSOR_CLOSE">CE_CloseFrame()</Binding>

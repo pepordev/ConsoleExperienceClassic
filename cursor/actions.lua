@@ -286,12 +286,44 @@ function CE_ClickCursor(mouseButton)
             element:SetValue(current - step)
         end
     elseif buttonName and string.find(buttonName, "ContainerFrame%d+Item%d+") then
-        -- Container items: "Select" (A button) should NOT pick up the item
-        -- Only "Bind" (X button via CE_PickupItem) should pick it up
-        -- So we skip the regular click for container items on left click
+        -- Container items: A button picks up item (or places/swaps if cursor has item)
+        -- B button uses the item directly without picking up
         if mouseButton == "LeftButton" then
-            -- Just refresh tooltip, don't click (which might pick up the item)
-            CE_Debug("Select action on container item - skipping click to prevent pickup")
+            -- Check cursor state before clicking
+            local hadCursorItem = CursorHasItem() or CursorHasSpell()
+            
+            if hadCursorItem then
+                -- Cursor has item - check if slot has item (for swapping)
+                local slotItemTexture = nil
+                local _, _, bagID = string.find(buttonName, "ContainerFrame(%d+)")
+                if bagID then
+                    bagID = tonumber(bagID) - 1
+                    local slotID = element:GetID()
+                    -- Get slot item texture before clicking (in case we swap)
+                    slotItemTexture = GetContainerItemInfo(bagID, slotID)
+                end
+                
+                -- Regular click will place cursor item (and swap if slot has item)
+                if element.Click then
+                    element:Click(mouseButton)
+                end
+                
+                -- Update fake cursor based on result
+                if CursorHasItem() or CursorHasSpell() then
+                    -- Item swap occurred - show the swapped item on fake cursor
+                    if slotItemTexture and Cursor and Cursor.SetHeldItemTexture then
+                        Cursor:SetHeldItemTexture(slotItemTexture)
+                    end
+                else
+                    -- Item was placed (slot was empty) - clear fake cursor
+                    if Cursor and Cursor.ClearHeldItemTexture then
+                        Cursor:ClearHeldItemTexture()
+                    end
+                end
+            else
+                -- Cursor is empty - use CE_PickupItem to pick up and show on fake cursor
+                CE_PickupItem()
+            end
         elseif mouseButton == "RightButton" then
             -- Right click (B button) should use the item directly without picking up
             -- Use CE_UseItem which uses the item without picking it up
@@ -396,20 +428,6 @@ function CE_UseItem()
             -- Use the item directly without picking it up
             UseContainerItem(bagID, slotID)
             
-            -- Ensure cursor is clear and placement frame is hidden
-            if CursorHasItem() or CursorHasSpell() then
-                ClearCursor()
-            end
-            
-            -- Clear fake cursor texture if it exists
-            if Cursor and Cursor.ClearHeldItemTexture then
-                Cursor:ClearHeldItemTexture()
-            end
-            
-            -- Ensure placement frame is hidden
-            if ConsoleExperience.placement and ConsoleExperience.placement.Hide then
-                ConsoleExperience.placement:Hide()
-            end
             
             -- Refresh frame state
             if Cursor then
@@ -524,15 +542,26 @@ function CE_PickupItem()
     if pickedUpTexture and Cursor.SetHeldItemTexture then
         Cursor:SetHeldItemTexture(pickedUpTexture)
     end
+
+    Cursor:RefreshFrame()
+end
+
+-- ============================================================================
+-- Bind Action (Pickup + Show Placement Frame)
+-- ============================================================================
+
+function CE_Bind()
+    local Cursor = ConsoleExperience.cursor
     
-    -- Show placement frame when picking up something
+    -- Use the same pickup logic as CE_PickupItem
+    CE_PickupItem()
+    
+    -- Show placement frame when binding items to action bars
     if CursorHasSpell() or CursorHasItem() then
         if ConsoleExperience.placement then
             ConsoleExperience.placement:Show()
         end
     end
-    
-    Cursor:RefreshFrame()
 end
 
 -- ============================================================================

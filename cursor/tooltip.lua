@@ -144,11 +144,11 @@ Tooltip.frameActions = {}
 
 function Tooltip:Initialize()
     self.frameActions = {
-        -- Container (bag) items - A = Select, X = Bind, B = Use, Y = Drop
+        -- Container (bag) items - A = Pickup, X = Bind, B = Use, Y = Drop
         {
             pattern = "ContainerFrame%d+Item%d+",
-            actions = {{icon = "a", prompt = "Select"}, {icon = "x", prompt = "Bind"}, {icon = "b", prompt = "Use"}, {icon = "y", prompt = "Drop"}},
-            bindings = {{key = "1", action = "CE_CURSOR_CLICK_LEFT"}, {key = "2", action = "CE_CURSOR_PICKUP"}, {key = "4", action = "CE_CURSOR_CLICK_RIGHT"}, {key = "3", action = "CE_CURSOR_DELETE"}}
+            actions = {{icon = "a", prompt = "Pickup"}, {icon = "x", prompt = "Bind"}, {icon = "b", prompt = "Use"}, {icon = "y", prompt = "Drop"}},
+            bindings = {{key = "1", action = "CE_CURSOR_CLICK_LEFT"}, {key = "2", action = "CE_CURSOR_BIND"}, {key = "4", action = "CE_CURSOR_CLICK_RIGHT"}, {key = "3", action = "CE_CURSOR_DELETE"}}
         },
         -- Character equipment slots - B = Unequip
         {
@@ -159,8 +159,8 @@ function Tooltip:Initialize()
         -- Spellbook buttons
         {
             pattern = "SpellButton%d+",
-            actions = {{icon = "a", prompt = "Cast"}, {icon = "x", prompt = "Pickup"}},
-            bindings = {{key = "1", action = "CE_CURSOR_CLICK_LEFT"}, {key = "2", action = "CE_CURSOR_PICKUP"}}
+            actions = {{icon = "a", prompt = "Cast"}, {icon = "x", prompt = "Bind"}},
+            bindings = {{key = "1", action = "CE_CURSOR_CLICK_LEFT"}, {key = "2", action = "CE_CURSOR_BIND"}}
         },
         -- Talent frame
         {
@@ -243,8 +243,8 @@ function Tooltip:Initialize()
         -- Macro buttons
         {
             pattern = "MacroButton%d+",
-            actions = {{icon = "a", prompt = "Select"}, {icon = "x", prompt = "Pickup"}},
-            bindings = {{key = "1", action = "CE_CURSOR_CLICK_LEFT"}, {key = "2", action = "CE_CURSOR_PICKUP"}}
+            actions = {{icon = "a", prompt = "Select"}, {icon = "x", prompt = "Bind"}},
+            bindings = {{key = "1", action = "CE_CURSOR_CLICK_LEFT"}, {key = "2", action = "CE_CURSOR_BIND"}}
         },
         -- Friends list
         {
