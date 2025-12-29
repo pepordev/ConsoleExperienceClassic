@@ -386,52 +386,8 @@ function Tooltip:ShowButtonTooltip(button)
         buttonName = ""
     end
     
-    -- Determine element type
-    local elementType = nil
-    if button:IsObjectType("EditBox") then
-        elementType = "editbox"
-    elseif button:IsObjectType("Slider") then
-        elementType = "slider"
-    elseif button:IsObjectType("CheckButton") then
-        elementType = "checkbox"
-    end
-    
-    -- Handle EditBox specially
-    if elementType == "editbox" then
-        GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
-        local currentText = button:GetText() or ""
-        if currentText ~= "" then
-            GameTooltip:SetText("Current: " .. currentText)
-        else
-            GameTooltip:SetText("Text Input")
-        end
-        GameTooltip:Show()
-        return
-    end
-    
-    -- Handle Slider specially
-    if elementType == "slider" then
-        GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
-        local value = button:GetValue() or 0
-        local min, max = button:GetMinMaxValues()
-        GameTooltip:SetText(string.format("Value: %.1f (%.1f - %.1f)", value, min, max))
-        GameTooltip:Show()
-        return
-    end
-    
-    -- Handle CheckButton specially
-    if elementType == "checkbox" then
-        GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
-        -- Try to get label from stored property or button text
-        local label = button.label or (button.GetText and button:GetText()) or buttonName or "Checkbox"
-        local checked = button:GetChecked() and "Enabled" or "Disabled"
-        GameTooltip:SetText(label)
-        GameTooltip:AddLine("Status: " .. checked, 0.7, 0.7, 0.7)
-        GameTooltip:Show()
-        return
-    end
-    
-    -- Handle different button types
+    -- Handle different button types FIRST (before element type checks)
+    -- This ensures specific button types like SpellButton are handled correctly
     if string.find(buttonName, "ContainerFrame%d+Item%d+") then
         -- Bag item
         local _, _, bagID = string.find(buttonName, "ContainerFrame(%d+)")
@@ -447,8 +403,14 @@ function Tooltip:ShowButtonTooltip(button)
     elseif string.find(buttonName, "SpellButton%d+") then
         -- Spellbook spell
         if SpellBookFrame and SpellBookFrame.bookType then
+            local id = button:GetID()
+            local spellID = id
+            if SpellBookFrame.bookType ~= BOOKTYPE_PET then
+                spellID = id + SpellBookFrame.selectedSkillLineOffset + 
+                    (SPELLS_PER_PAGE * (SPELLBOOK_PAGENUMBERS[SpellBookFrame.selectedSkillLine] - 1))
+            end
             GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
-            GameTooltip:SetSpell(button:GetID(), SpellBookFrame.bookType)
+            GameTooltip:SetSpell(spellID, SpellBookFrame.bookType)
         end
     elseif string.find(buttonName, "LootButton%d+") then
         -- Loot item
@@ -466,6 +428,53 @@ function Tooltip:ShowButtonTooltip(button)
         GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
         GameTooltip:SetInventoryItem("player", button:GetID())
     else
+        -- Check element types for generic UI elements
+        -- Determine element type
+        local elementType = nil
+        if button:IsObjectType("EditBox") then
+            elementType = "editbox"
+        elseif button:IsObjectType("Slider") then
+            elementType = "slider"
+        elseif button:IsObjectType("CheckButton") and not string.find(buttonName, "SpellButton%d+") then
+            -- Only treat as checkbox if it's not a SpellButton
+            elementType = "checkbox"
+        end
+        
+        -- Handle EditBox specially
+        if elementType == "editbox" then
+            GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
+            local currentText = button:GetText() or ""
+            if currentText ~= "" then
+                GameTooltip:SetText("Current: " .. currentText)
+            else
+                GameTooltip:SetText("Text Input")
+            end
+            GameTooltip:Show()
+            return
+        end
+        
+        -- Handle Slider specially
+        if elementType == "slider" then
+            GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
+            local value = button:GetValue() or 0
+            local min, max = button:GetMinMaxValues()
+            GameTooltip:SetText(string.format("Value: %.1f (%.1f - %.1f)", value, min, max))
+            GameTooltip:Show()
+            return
+        end
+        
+        -- Handle CheckButton specially
+        if elementType == "checkbox" then
+            GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
+            -- Try to get label from stored property or button text
+            local label = button.label or (button.GetText and button:GetText()) or buttonName or "Checkbox"
+            local checked = button:GetChecked() and "Enabled" or "Disabled"
+            GameTooltip:SetText(label)
+            GameTooltip:AddLine("Status: " .. checked, 0.7, 0.7, 0.7)
+            GameTooltip:Show()
+            return
+        end
+        
         -- Try to run the button's OnEnter script
         local onEnterScript = button:GetScript("OnEnter")
         if onEnterScript then
