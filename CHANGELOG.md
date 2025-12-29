@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.0](https://github.com/pepordev/ConsoleExperienceClassic/compare/v0.4.0...v0.5.0) (2025-12-29)
+
+
+### Features
+
+* add support for mail, trainer and professions frames ([fa5f452](https://github.com/pepordev/ConsoleExperienceClassic/commit/fa5f45263fc832d2ed511a5f73e20e0fecac40e9))
+
+
+### Bug Fixes
+
+* correct tooltip for spellTabs ([a587369](https://github.com/pepordev/ConsoleExperienceClassic/commit/a587369f269df98b280dba15d08e8e4f930a3913))
+
 ## [0.4.0](https://github.com/pepordev/ConsoleExperienceClassic/compare/v0.3.0...v0.4.0) (2025-12-29)
 
 
