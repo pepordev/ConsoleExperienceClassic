@@ -21,11 +21,21 @@ ConsoleExperience Classic provides a complete controller-friendly interface for 
 
 ### 🖱️ Cursor Navigation System
 - **Fake Cursor**: Visual cursor overlay for navigating UI elements
-- **Automatic Frame Detection**: Automatically hooks into major UI frames (Character, Spellbook, Bags, Quest Log, etc.)
+- **Automatic Frame Detection**: Automatically hooks into major UI frames including:
+  - Character Frame, Spellbook, Talents, Skills
+  - Bags, Bank, Quest Log, World Map
+  - Merchant, Auction House, Trade Frame
+  - Mailbox (including mail detail view)
+  - Trainer Frames (ClassTrainerFrame)
+  - Profession Frames (TradeSkillFrame - First Aid, Cooking, etc.)
+  - Static Popups, Gossip, Quest Frames
+  - And many more!
 - **Directional Navigation**: Navigate UI elements using D-pad (UP, DOWN, LEFT, RIGHT)
 - **Smart Wrapping**: When reaching the edge of a grid, automatically wraps to the opposite side on the same row/column
-- **Context-Sensitive Actions**: Different actions available based on the hovered element (Pickup, Place, Clear, etc.)
-- **Visual Feedback**: Highlighted buttons and tooltips showing available actions
+- **Context-Sensitive Actions**: Different actions available based on the hovered element (Pickup, Place, Clear, Bind, Use, etc.)
+- **Visual Feedback**: Highlighted buttons and tooltips showing available actions with controller button icons
+- **Dropdown Menu Support**: Full navigation support for dropdown menus - when a dropdown opens, cursor automatically navigates through all options
+- **Enhanced Tooltips**: Detailed tooltips for spells, items, mail, trainer skills, profession skills, and more
 
 ### 📋 Spell & Item Placement
 - **Placement Frame**: Visual grid for organizing spells, macros, and items
@@ -46,12 +56,14 @@ ConsoleExperience Classic provides a complete controller-friendly interface for 
 
 ### ⌨️ Virtual Keyboard
 - **Full QWERTY Layout**: Complete virtual keyboard with all standard keys
-- **Automatic Activation**: Appears automatically when chat edit box is visible
+- **Automatic Activation**: Appears automatically when chat edit box or any text input field is focused
 - **Controller Navigation**: Navigate keys using D-pad, select with A button
-- **Shift Mode**: Toggle between lowercase and uppercase characters
+- **Shift Mode**: Toggle between lowercase and uppercase characters using LT button
+- **Send Text**: Press X button (or RT) to send/confirm text input
 - **Smart Positioning**: Keyboard occupies lower 48% of screen for optimal visibility
 - **Visual Feedback**: Highlighted keys show current selection
 - **Text Preview**: Real-time text preview in integrated edit box
+- **Universal Support**: Works with chat, config text fields, and any EditBox in the game
 
 ![Virtual Keyboard](docs/images/keyboard.png)
 
@@ -109,7 +121,7 @@ For full functionality of the `CE_Interact` macro (interact with nearest target/
 
 ### Steam Input Setup
 
-**Important**: For the best experience, use the **"WoW Vanilla Console experience by p3p0 v1.1"** Steam Input distribution.
+**Important**: For the best experience, name your game "TurtleWoW" in your steam library, search and use the **"WoW Vanilla Console experience by p3p0 v1.2"** Steam Input distribution.
 
 1. Launch World of Warcraft through Steam
 2. Open Steam Big Picture mode or Steam overlay
@@ -122,16 +134,16 @@ For full functionality of the `CE_Interact` macro (interact with nearest target/
 
 ### Basic Controls
 
-- **D-Pad**: Navigate UI elements, move cursor, and navigate virtual keyboard
-- **A Button**: Confirm/Click/Place items, select keyboard keys
-- **B Button**: Cancel/Back/Clear slots, close menus
-- **X Button**: Pickup items/spells
-- **Y Button**: Additional actions (context-dependent)
+- **D-Pad**: Navigate UI elements, move cursor, navigate virtual keyboard, and navigate dropdown menus
+- **A Button**: Confirm/Click/Place items, select keyboard keys, select dropdown options
+- **B Button**: Cancel/Back/Clear slots, close menus, use items (context-dependent)
+- **X Button**: Pickup items/spells, bind to action bars, send text (when keyboard is visible)
+- **Y Button**: Additional actions (context-dependent, e.g., drop items)
 - **LT/RT**: Modifier keys for additional action bar pages
 - **LB**: Interact with nearest target/object (CE_Interact macro)
 - **LT+MENU**: Toggle radial menu
-- **LT(virtual keyboard)**: Toggle keyboard shift mode (uppercase/lowercase)
-- **RT(virtual keyboard)**: Send text
+- **LT (virtual keyboard)**: Toggle keyboard shift mode (uppercase/lowercase)
+- **RT/X (virtual keyboard)**: Send text/confirm input
 
 ### Opening Configuration
 
@@ -146,11 +158,14 @@ Type `/ce` in chat to open the configuration menu.
 
 ### Cursor Navigation
 
-When UI frames are open (Character, Spellbook, Bags, etc.), the cursor navigation system automatically activates:
+When UI frames are open (Character, Spellbook, Bags, Mailbox, Trainer, Profession frames, etc.), the cursor navigation system automatically activates:
 - Use D-pad to move between interactive elements
 - A button to select/click
-- B button to cancel/close
+- B button to cancel/close (or use items/unequip in some contexts)
+- X button to pickup/bind items and spells
 - The cursor will automatically wrap around grids (e.g., inventory bags)
+- **Dropdown Menus**: When you click a dropdown, the cursor automatically navigates through all dropdown options
+- **Enhanced Tooltips**: Hover over any element to see detailed information with controller button action prompts
 
 ### Placing Spells/Items
 
@@ -164,15 +179,62 @@ When UI frames are open (Character, Spellbook, Bags, etc.), the cursor navigatio
 
 ### Using the Virtual Keyboard
 
-1. Open chat by pressing Enter, clicking the chat input box or accesing from the radial menu
+1. Open chat by pressing Enter, clicking the chat input box, or accessing from the radial menu
 2. The virtual keyboard will automatically appear in the lower half of the screen
 3. Navigate keys using the D-pad
 4. Press A button to type the selected key
 5. Press LT to toggle between lowercase and uppercase
 6. Press B button or Escape to close the keyboard and cancel typing
-7. Press RT to send the message
+7. Press **X button or RT** to send the message/confirm input
 
-The keyboard supports full QWERTY layout including numbers, letters, and common punctuation marks.
+The keyboard supports full QWERTY layout including numbers, letters, and common punctuation marks. The keyboard also works with any text input field in the game, including configuration menus and other EditBoxes.
+
+### Working with Mailbox
+
+1. Open mailbox using cursor navigation
+2. Navigate through mail items with D-pad
+3. Press A button to select a mail
+4. When mail detail opens, navigate through:
+   - Mail item buttons (A = Select, X = Take item)
+   - Reply, Delete, Cancel buttons
+   - Money button (if present)
+5. Press B button to close mail detail and return to inbox
+
+### Working with Trainer Frames
+
+1. Open trainer frame using cursor navigation
+2. Navigate through available skills with D-pad
+3. Press A button to learn a skill
+4. Tooltips show detailed skill information including cost and requirements
+
+### Working with Profession Frames
+
+1. Open profession frame (First Aid, Cooking, etc.) using cursor navigation
+2. Navigate through profession skills with D-pad
+3. Press A button to select a skill
+4. View skill reagents and requirements in tooltips
+5. Navigate through reagent buttons to see item details
+
+### Working with Dropdown Menus
+
+1. When you click any dropdown menu in the game, the cursor automatically navigates to it
+2. Use D-pad to navigate through all dropdown options
+3. Press A button to select an option
+4. The cursor automatically returns to the parent frame when dropdown closes
+5. Cursor appears above dropdown menus for optimal visibility
+
+## Recent Updates
+
+### Latest Features
+
+- **Dropdown Menu Navigation**: Full cursor navigation support for all dropdown menus in the game
+- **Mailbox Support**: Complete navigation for mailbox frames including mail detail view (OpenMailFrame)
+- **Trainer Frame Support**: Navigate and interact with class trainer frames (ClassTrainerFrame)
+- **Profession Frame Support**: Navigate and interact with profession frames (TradeSkillFrame - First Aid, Cooking, etc.)
+- **Enhanced Tooltips**: Improved tooltip support for spellbook tabs, mail items, trainer skills, profession skills, and reagents
+- **Keyboard X Button**: X button now sends text when virtual keyboard is visible (in addition to RT button)
+- **Improved Frame Detection**: Better detection and hooking of dynamically loaded frames
+- **Better Z-Ordering**: Cursor now appears above dropdown menus and other UI elements
 
 ## Roadmap
 
