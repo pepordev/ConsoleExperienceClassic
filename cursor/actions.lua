@@ -561,9 +561,15 @@ end
 -- ============================================================================
 
 function CE_Bind()
-    local Cursor = ConsoleExperience.cursor
+    -- If keyboard is visible, X button should always send text (Confirm)
+    if ConsoleExperience.keyboard and ConsoleExperience.keyboard.frame and ConsoleExperience.keyboard.frame:IsVisible() then
+        if ConsoleExperience.keyboard.Confirm then
+            ConsoleExperience.keyboard:Confirm()
+        end
+        return
+    end
     
-    -- Use the same pickup logic as CE_PickupItem
+    -- Normal bind action - use the same pickup logic as CE_PickupItem
     CE_PickupItem()
     
     -- Show placement frame when binding items to action bars
@@ -677,13 +683,15 @@ function CE_PLACEMENT_CLEAR()
 end
 
 -- ============================================================================
--- Radial Menu Toggle
+-- Radial Menu Show (Shift+Escape)
 -- ============================================================================
 
 function CE_ToggleRadialMenu()
-    CE_Debug("Radial menu toggle triggered")
+    CE_Debug("Radial menu show triggered")
     if ConsoleExperience.radial then
-        ConsoleExperience.radial:Toggle()
+        -- Only show the radial menu (don't toggle)
+        -- ESC or close button will close it
+        ConsoleExperience.radial:Show()
     else
         CE_Debug("Radial module not found!")
     end

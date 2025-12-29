@@ -345,7 +345,7 @@ function Radial:CreateMenuButton(index, item, angleStep)
 end
 
 -- ============================================================================
--- Show/Hide/Toggle
+-- Show/Hide
 -- ============================================================================
 
 function Radial:Show()
@@ -376,14 +376,6 @@ function Radial:Hide()
     end
 end
 
-function Radial:Toggle()
-    if self.frame and self.frame:IsVisible() then
-        self:Hide()
-    else
-        self:Show()
-    end
-end
-
 function Radial:IsVisible()
     return self.frame and self.frame:IsVisible()
 end
@@ -394,13 +386,7 @@ end
 
 function Radial:Initialize()
     self:CreateFrame()
-    CE_Debug("Radial menu loaded. Use /ceradial to toggle.")
-end
-
--- Slash command
-SLASH_CERADIAL1 = "/ceradial"
-SlashCmdList["CERADIAL"] = function()
-    Radial:Toggle()
+    CE_Debug("Radial menu loaded.")
 end
 
 -- Module loaded silently

@@ -120,7 +120,7 @@ function Keyboard:CreateFrame()
     end
     
     -- Don't enable keyboard input on the frame - it blocks cursor navigation
-    -- ESC is handled via UISpecialFrames, but we'll hook CloseAllWindows to prevent closing other frames
+    -- ESC is handled via UISpecialFrames
     
     -- Background - translucent like chat frame
     local bg = frame:CreateTexture(nil, "BACKGROUND")
@@ -421,14 +421,14 @@ function Keyboard:CreateKeys(parent)
             enterKey.keyCol = keyIndex
             self.enterKey = enterKey
             
-            -- Add RT texture to enter key (top right corner)
-            local rtTexture = enterKey:CreateTexture(nil, "OVERLAY")
-            rtTexture:SetWidth(24)
-            rtTexture:SetHeight(24)
-            rtTexture:SetPoint("TOPRIGHT", enterKey, "TOPRIGHT", -2, -2)
-            rtTexture:SetTexture("Interface\\AddOns\\ConsoleExperienceClassic\\img\\rt")
-            rtTexture:SetAlpha(0.8)
-            enterKey.rtTexture = rtTexture
+            -- Add X texture to enter key (top right corner) - X button (key "2") triggers Confirm
+            local xTexture = enterKey:CreateTexture(nil, "OVERLAY")
+            xTexture:SetWidth(24)
+            xTexture:SetHeight(24)
+            xTexture:SetPoint("TOPRIGHT", enterKey, "TOPRIGHT", -2, -2)
+            xTexture:SetTexture("Interface\\AddOns\\ConsoleExperienceClassic\\img\\x")
+            xTexture:SetAlpha(0.8)
+            enterKey.xTexture = xTexture
         end
     end
     
@@ -856,12 +856,6 @@ function Keyboard:CheckModifiers()
     
     -- Update last shift state
     self.lastShiftState = shiftPressed
-    
-    -- Check for control modifier (RT) - send text if pressed
-    local ctrlPressed = IsControlKeyDown()
-    if ctrlPressed and string.len(self.currentText) > 0 then
-        self:Confirm()
-    end
 end
 
 -- Initialize cursor navigation for keyboard keys
@@ -1462,24 +1456,6 @@ end
 
 function Keyboard:Initialize()
     self:CreateFrame()
-    
-    -- Hook CloseAllWindows to prevent ESC from closing other frames when keyboard is visible
-    if not self.closeAllWindowsHooked then
-        local oldCloseAllWindows = CloseAllWindows
-        CloseAllWindows = function()
-            -- Check if keyboard is visible
-            if ConsoleExperience.keyboard and ConsoleExperience.keyboard.frame and ConsoleExperience.keyboard.frame:IsVisible() then
-                -- Only close keyboard, don't close other frames
-                ConsoleExperience.keyboard:Hide()
-            else
-                -- Normal ESC behavior - close all frames in UISpecialFrames
-                if oldCloseAllWindows then
-                    oldCloseAllWindows()
-                end
-            end
-        end
-        self.closeAllWindowsHooked = true
-    end
     
     -- Hook ChatFrameEditBox to show/hide keyboard
     if ChatFrameEditBox then

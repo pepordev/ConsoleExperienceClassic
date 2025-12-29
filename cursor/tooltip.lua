@@ -128,6 +128,26 @@ TooltipHookFrame:SetScript("OnShow", function()
     end
     
     local actions = Tooltip:GetActions(buttonName, elementType)
+    
+    -- If keyboard is visible, add X = Send action
+    if ConsoleExperience.keyboard and ConsoleExperience.keyboard.frame and ConsoleExperience.keyboard.frame:IsVisible() then
+        -- Add X = Send action to any button when keyboard is visible
+        if not actions then
+            actions = {}
+        end
+        -- Check if X action already exists
+        local hasXAction = false
+        for _, action in ipairs(actions) do
+            if action.icon == "x" then
+                hasXAction = true
+                break
+            end
+        end
+        if not hasXAction then
+            table.insert(actions, {icon = "x", prompt = "Send"})
+        end
+    end
+    
     if actions then
         AddPrompts(actions)
     end
@@ -317,17 +337,38 @@ function Tooltip:GetActions(buttonName, elementType)
 end
 
 function Tooltip:GetBindings(buttonName)
-    if not buttonName then
-        return {{key = "1", action = "CE_CURSOR_CLICK_LEFT"}}
-    end
+    local bindings = nil
     
-    for _, config in ipairs(self.frameActions) do
-        if string.find(buttonName, config.pattern) then
-            return config.bindings
+    if buttonName then
+        for _, config in ipairs(self.frameActions) do
+            if string.find(buttonName, config.pattern) then
+                bindings = config.bindings
+                break
+            end
         end
     end
     
-    return {{key = "1", action = "CE_CURSOR_CLICK_LEFT"}}
+    -- Default binding if no pattern matched
+    if not bindings then
+        bindings = {{key = "1", action = "CE_CURSOR_CLICK_LEFT"}}
+    end
+    
+    -- If keyboard is visible, add X = Send binding (key "2" = CE_CURSOR_BIND)
+    if ConsoleExperience.keyboard and ConsoleExperience.keyboard.frame and ConsoleExperience.keyboard.frame:IsVisible() then
+        -- Check if X binding already exists
+        local hasXBinding = false
+        for _, binding in ipairs(bindings) do
+            if binding.key == "2" then
+                hasXBinding = true
+                break
+            end
+        end
+        if not hasXBinding then
+            table.insert(bindings, {key = "2", action = "CE_CURSOR_BIND"})
+        end
+    end
+    
+    return bindings
 end
 
 -- ============================================================================
