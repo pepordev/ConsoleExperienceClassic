@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/pepordev/ConsoleExperienceClassic/compare/v0.5.0...v0.5.1) (2025-12-29)
+
+
+### Bug Fixes
+
+* correct bindings to prevent losing original bindings ([5b2170f](https://github.com/pepordev/ConsoleExperienceClassic/commit/5b2170f8031fd88f7b5bed777c731296a0902772))
+
 ## [0.5.0](https://github.com/pepordev/ConsoleExperienceClassic/compare/v0.4.0...v0.5.0) (2025-12-29)
 
 
