@@ -176,6 +176,18 @@ function Tooltip:Initialize()
             actions = {{icon = "a", prompt = "Select"}, {icon = "b", prompt = "Unequip"}},
             bindings = {{key = "1", action = "CE_CURSOR_CLICK_LEFT"}, {key = "4", action = "CE_CURSOR_UNEQUIP"}}
         },
+        -- Spellbook tabs
+        {
+            pattern = "SpellBookFrameTabButton%d+",
+            actions = {{icon = "a", prompt = "Select"}},
+            bindings = {{key = "1", action = "CE_CURSOR_CLICK_LEFT"}}
+        },
+        -- Spellbook skill line tabs
+        {
+            pattern = "SpellBookSkillLineTab%d+",
+            actions = {{icon = "a", prompt = "Select"}},
+            bindings = {{key = "1", action = "CE_CURSOR_CLICK_LEFT"}}
+        },
         -- Spellbook buttons
         {
             pattern = "SpellButton%d+",
@@ -290,6 +302,24 @@ function Tooltip:Initialize()
             actions = {{icon = "a", prompt = "Select"}},
             bindings = {{key = "1", action = "CE_CURSOR_CLICK_LEFT"}}
         },
+        -- Trainer skill buttons
+        {
+            pattern = "ClassTrainerSkill%d+",
+            actions = {{icon = "a", prompt = "Learn"}},
+            bindings = {{key = "1", action = "CE_CURSOR_CLICK_LEFT"}}
+        },
+        -- Profession skill buttons
+        {
+            pattern = "TradeSkillSkill%d+",
+            actions = {{icon = "a", prompt = "Select"}},
+            bindings = {{key = "1", action = "CE_CURSOR_CLICK_LEFT"}}
+        },
+        -- Profession reagent buttons
+        {
+            pattern = "TradeSkillReagent%d+",
+            actions = {{icon = "a", prompt = "Select"}},
+            bindings = {{key = "1", action = "CE_CURSOR_CLICK_LEFT"}}
+        },
         -- Roll frame buttons
         {
             pattern = "GroupLootFrame%d+.*Button",
@@ -400,6 +430,16 @@ function Tooltip:ShowButtonTooltip(button)
         -- Equipment slot
         GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
         GameTooltip:SetInventoryItem("player", button:GetID())
+    elseif string.find(buttonName, "SpellBookFrameTabButton%d+") or string.find(buttonName, "SpellBookSkillLineTab%d+") then
+        -- Spellbook tabs - use button's OnEnter script
+        local onEnterScript = button:GetScript("OnEnter")
+        if onEnterScript then
+            GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
+            local oldThis = this
+            this = button
+            onEnterScript()
+            this = oldThis
+        end
     elseif string.find(buttonName, "SpellButton%d+") then
         -- Spellbook spell
         if SpellBookFrame and SpellBookFrame.bookType then
@@ -427,6 +467,46 @@ function Tooltip:ShowButtonTooltip(button)
         -- Bank item
         GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
         GameTooltip:SetInventoryItem("player", button:GetID())
+    elseif string.find(buttonName, "MailItem%d+Button") then
+        -- Mail item - use button's OnEnter script (Classic WoW doesn't have SetMailItem)
+        local onEnterScript = button:GetScript("OnEnter")
+        if onEnterScript then
+            GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
+            local oldThis = this
+            this = button
+            onEnterScript()
+            this = oldThis
+        end
+    elseif string.find(buttonName, "ClassTrainerSkill%d+") then
+        -- Trainer skill - use button's OnEnter script (Classic WoW doesn't have SetTrainerService)
+        local onEnterScript = button:GetScript("OnEnter")
+        if onEnterScript then
+            GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
+            local oldThis = this
+            this = button
+            onEnterScript()
+            this = oldThis
+        end
+    elseif string.find(buttonName, "TradeSkillSkill%d+") then
+        -- Profession skill - use button's OnEnter script (Classic WoW doesn't have SetTradeSkillSkill)
+        local onEnterScript = button:GetScript("OnEnter")
+        if onEnterScript then
+            GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
+            local oldThis = this
+            this = button
+            onEnterScript()
+            this = oldThis
+        end
+    elseif string.find(buttonName, "TradeSkillReagent%d+") then
+        -- Profession reagent - use button's OnEnter script (Classic WoW doesn't have SetTradeSkillReagent)
+        local onEnterScript = button:GetScript("OnEnter")
+        if onEnterScript then
+            GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
+            local oldThis = this
+            this = button
+            onEnterScript()
+            this = oldThis
+        end
     else
         -- Check element types for generic UI elements
         -- Determine element type
