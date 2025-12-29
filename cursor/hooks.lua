@@ -34,6 +34,8 @@ Hooks.frames = {
     {frame = "MerchantFrame", name = "Merchant"},
     {frame = "AuctionFrame", name = "Auction House"},
     {frame = "TradeFrame", name = "Trade"},
+    {frame = "TradeSkillFrame", name = "Profession"},
+    {frame = "ClassTrainerFrame", name = "Trainer"},
     {frame = "ContainerFrame1", name = "Bag 1"},
     {frame = "ContainerFrame2", name = "Bag 2"},
     {frame = "ContainerFrame3", name = "Bag 3"},
@@ -48,6 +50,7 @@ Hooks.frames = {
     {frame = "ContainerFrame12", name = "Bank Bag 7"},
     {frame = "LootFrame", name = "Loot"},
     {frame = "MailFrame", name = "Mail"},
+    {frame = "OpenMailFrame", name = "Open Mail"},
     {frame = "BankFrame", name = "Bank"},
     {frame = "GroupLootFrame1", name = "Roll 1"},
     {frame = "GroupLootFrame2", name = "Roll 2"},
@@ -74,18 +77,132 @@ function Hooks:Initialize()
         end
     end
     
+    -- Hook dropdown menus (DropDownList1, DropDownList2, etc.)
+    self:HookDropdownMenus()
+    
     -- Create event frame to hook load-on-demand frames
     if not self.eventFrame then
         self.eventFrame = CreateFrame("Frame")
         self.eventFrame:RegisterEvent("ADDON_LOADED")
         self.eventFrame:RegisterEvent("WORLD_MAP_UPDATE")
         self.eventFrame:RegisterEvent("TAXIMAP_OPENED")
+        self.eventFrame:RegisterEvent("MAIL_SHOW")
+        self.eventFrame:RegisterEvent("TRADE_SKILL_SHOW")
+        self.eventFrame:RegisterEvent("TRAINER_SHOW")
         self.eventFrame:SetScript("OnEvent", function()
             Hooks:TryHookPendingFrames()
         end)
     end
     
     CE_Debug("Hooks initialized for " .. hookedCount .. " frames.")
+end
+
+-- Hook dropdown menu frames (DropDownList1, DropDownList2, etc.)
+function Hooks:HookDropdownMenus()
+    -- Hook up to 10 dropdown lists (should be enough)
+    for i = 1, 10 do
+        local dropdownName = "DropDownList" .. i
+        local dropdown = getglobal(dropdownName)
+        if dropdown then
+            self:HookDropdownFrame(dropdown)
+        end
+    end
+    
+    -- Also hook dynamically created dropdowns via OnUpdate check
+    if not self.dropdownCheckFrame then
+        self.dropdownCheckFrame = CreateFrame("Frame")
+        self.dropdownCheckFrame:SetScript("OnUpdate", function()
+            -- Check for dropdown lists every 0.1 seconds
+            this.elapsed = (this.elapsed or 0) + arg1
+            if this.elapsed > 0.1 then
+                this.elapsed = 0
+                Hooks:CheckForNewDropdowns()
+            end
+        end)
+    end
+end
+
+-- Hook a specific dropdown frame
+function Hooks:HookDropdownFrame(dropdown)
+    if not dropdown or dropdown.ceHooked then return end
+    
+    local oldOnShow = dropdown:GetScript("OnShow")
+    local oldOnHide = dropdown:GetScript("OnHide")
+    
+    dropdown:SetScript("OnShow", function()
+        -- Run original OnShow first
+        if oldOnShow then
+            oldOnShow()
+        end
+        
+        -- Add dropdown to active frames so its buttons are navigable
+        local Cursor = ConsoleExperience.cursor
+        Cursor.navigationState.activeFrames[dropdown] = true
+        CE_Debug("Dropdown menu opened: " .. (dropdown:GetName() or "unnamed"))
+        
+        -- Ensure cursor appears above dropdown menu
+        -- Get dropdown's frame level and set cursor higher
+        local dropdownLevel = dropdown:GetFrameLevel()
+        Cursor.frame:SetFrameLevel(dropdownLevel + 100)
+        Cursor.highlight:SetFrameLevel(dropdownLevel + 99)
+        
+        -- Refresh button collection to include dropdown buttons
+        Cursor:RefreshFrame()
+        
+        -- Move cursor to first dropdown button if available
+        local firstButton = Cursor:FindFirstVisibleButton(dropdown)
+        if firstButton then
+            Cursor:MoveCursorToButton(firstButton)
+        end
+    end)
+    
+    dropdown:SetScript("OnHide", function()
+        -- Run original OnHide first
+        if oldOnHide then
+            oldOnHide()
+        end
+        
+        -- Remove dropdown from active frames
+        local Cursor = ConsoleExperience.cursor
+        Cursor.navigationState.activeFrames[dropdown] = nil
+        CE_Debug("Dropdown menu closed: " .. (dropdown:GetName() or "unnamed"))
+        
+        -- Restore cursor frame levels to default
+        Cursor.frame:SetFrameLevel(1001)
+        Cursor.highlight:SetFrameLevel(1000)
+        
+        -- Refresh button collection
+        Cursor:RefreshFrame()
+        
+        -- Move cursor back to the frame that opened the dropdown if available
+        local mostRecentFrame = nil
+        for activeFrame, _ in pairs(Cursor.navigationState.activeFrames) do
+            if activeFrame:IsVisible() and activeFrame ~= dropdown then
+                mostRecentFrame = activeFrame
+                break
+            end
+        end
+        
+        if mostRecentFrame then
+            local firstButton = Cursor:FindFirstVisibleButton(mostRecentFrame)
+            if firstButton then
+                Cursor:MoveCursorToButton(firstButton)
+            end
+        end
+    end)
+    
+    dropdown.ceHooked = true
+end
+
+-- Check for newly created dropdown menus
+function Hooks:CheckForNewDropdowns()
+    for i = 1, 10 do
+        local dropdownName = "DropDownList" .. i
+        local dropdown = getglobal(dropdownName)
+        if dropdown and not dropdown.ceHooked then
+            self:HookDropdownFrame(dropdown)
+        end
+    end
 end
 
 -- Try to hook frames that weren't available at init time
@@ -120,6 +237,36 @@ function Hooks:TryHookPendingFrames()
         if not Cursor.navigationState.activeFrames[taxiFrame] then
             CE_Debug("TaxiFrame detected visible, initializing cursor")
             self:OnFrameShow(taxiFrame)
+        end
+    end
+    
+    -- Special handling for OpenMailFrame - check if it's visible and not yet initialized
+    local openMailFrame = getglobal("OpenMailFrame")
+    if openMailFrame and openMailFrame:IsVisible() then
+        local Cursor = ConsoleExperience.cursor
+        if not Cursor.navigationState.activeFrames[openMailFrame] then
+            CE_Debug("OpenMailFrame detected visible, initializing cursor")
+            self:OnFrameShow(openMailFrame)
+        end
+    end
+    
+    -- Special handling for TradeSkillFrame - check if it's visible and not yet initialized
+    local tradeSkillFrame = getglobal("TradeSkillFrame")
+    if tradeSkillFrame and tradeSkillFrame:IsVisible() then
+        local Cursor = ConsoleExperience.cursor
+        if not Cursor.navigationState.activeFrames[tradeSkillFrame] then
+            CE_Debug("TradeSkillFrame detected visible, initializing cursor")
+            self:OnFrameShow(tradeSkillFrame)
+        end
+    end
+    
+    -- Special handling for ClassTrainerFrame - check if it's visible and not yet initialized
+    local classTrainerFrame = getglobal("ClassTrainerFrame")
+    if classTrainerFrame and classTrainerFrame:IsVisible() then
+        local Cursor = ConsoleExperience.cursor
+        if not Cursor.navigationState.activeFrames[classTrainerFrame] then
+            CE_Debug("ClassTrainerFrame detected visible, initializing cursor")
+            self:OnFrameShow(classTrainerFrame)
         end
     end
 end
