@@ -314,45 +314,60 @@ function CE_ClickCursor(mouseButton)
     elseif buttonName and string.find(buttonName, "ContainerFrame%d+Item%d+") then
         -- Container items: A button picks up item (or places/swaps if cursor has item)
         -- B button uses the item directly without picking up
+        local _, _, containerFrameNum = string.find(buttonName, "ContainerFrame(%d+)")
+        CE_Debug("CE_ClickCursor: Container item detected - buttonName=" .. (buttonName or "nil") .. ", ContainerFrame=" .. (containerFrameNum or "nil"))
         if mouseButton == "LeftButton" then
             -- Check cursor state before clicking
             local hadCursorItem = CursorHasItem() or CursorHasSpell()
+            CE_Debug("CE_ClickCursor: hadCursorItem=" .. tostring(hadCursorItem))
             
             if hadCursorItem then
                 -- Cursor has item - check if slot has item (for swapping)
+                -- Use Blizzard's method: GetParent():GetID() for bag ID, GetID() for slot ID
                 local slotItemTexture = nil
-                local _, _, bagID = string.find(buttonName, "ContainerFrame(%d+)")
-                if bagID then
-                    bagID = tonumber(bagID) - 1
-                    local slotID = element:GetID()
+                local parentFrame = element:GetParent()
+                local bagID = parentFrame and parentFrame:GetID()
+                local slotID = element:GetID()
+                CE_Debug("CE_ClickCursor: Using Blizzard method - parentFrame=" .. (parentFrame and parentFrame:GetName() or "nil") .. ", bagID=" .. tostring(bagID) .. ", slotID=" .. tostring(slotID))
+                if bagID and slotID then
                     -- Get slot item texture before clicking (in case we swap)
                     slotItemTexture = GetContainerItemInfo(bagID, slotID)
+                    CE_Debug("CE_ClickCursor: slotItemTexture=" .. tostring(slotItemTexture) .. " (nil means slot is empty)")
                 end
                 
                 -- Regular click will place cursor item (and swap if slot has item)
+                CE_Debug("CE_ClickCursor: Calling element:Click()")
                 if element.Click then
                     element:Click(mouseButton)
+                else
+                    CE_Debug("CE_ClickCursor: ERROR - element:Click() is nil!")
                 end
                 
                 -- Update fake cursor based on result
-                if CursorHasItem() or CursorHasSpell() then
+                local stillHasCursorItem = CursorHasItem() or CursorHasSpell()
+                CE_Debug("CE_ClickCursor: After Click(), cursor still has item? " .. tostring(stillHasCursorItem))
+                if stillHasCursorItem then
                     -- Item swap occurred - show the swapped item on fake cursor
+                    CE_Debug("CE_ClickCursor: Item swap occurred")
                     if slotItemTexture and Cursor and Cursor.SetHeldItemTexture then
                         Cursor:SetHeldItemTexture(slotItemTexture)
                     end
                 else
                     -- Item was placed (slot was empty) - clear fake cursor
+                    CE_Debug("CE_ClickCursor: Item was placed, clearing fake cursor")
                     if Cursor and Cursor.ClearHeldItemTexture then
                         Cursor:ClearHeldItemTexture()
                     end
                 end
             else
                 -- Cursor is empty - use CE_PickupItem to pick up and show on fake cursor
+                CE_Debug("CE_ClickCursor: Cursor empty, calling CE_PickupItem()")
                 CE_PickupItem()
             end
         elseif mouseButton == "RightButton" then
             -- Right click (B button) should use the item directly without picking up
             -- Use CE_UseItem which uses the item without picking it up
+            CE_Debug("CE_ClickCursor: RightButton click, calling CE_UseItem()")
             CE_UseItem()
             return -- Return early to skip the regular refresh/tooltip logic
         end
@@ -393,22 +408,41 @@ function CE_DeleteItem()
     local Cursor = ConsoleExperience.cursor
     local button = Cursor.navigationState.currentButton
     
-    if not button then return end
+    if not button then 
+        CE_Debug("CE_DeleteItem: No button found")
+        return 
+    end
     
     local buttonName = button:GetName()
-    if not buttonName then return end
+    if not buttonName then 
+        CE_Debug("CE_DeleteItem: No button name")
+        return 
+    end
+    
+    CE_Debug("CE_DeleteItem: buttonName=" .. buttonName)
     
     -- Check if this is a bag item
     if string.find(buttonName, "ContainerFrame%d+Item%d+") then
-        local _, _, bagID = string.find(buttonName, "ContainerFrame(%d+)")
-        if bagID then
-            bagID = tonumber(bagID) - 1
-            local slotID = button:GetID()
+        -- Use Blizzard's method: GetParent():GetID() for bag ID, GetID() for slot ID
+        local parentFrame = button:GetParent()
+        local bagID = parentFrame and parentFrame:GetID()
+        local slotID = button:GetID()
+        CE_Debug("CE_DeleteItem: Using Blizzard method - parentFrame=" .. (parentFrame and parentFrame:GetName() or "nil") .. ", bagID=" .. tostring(bagID) .. ", slotID=" .. tostring(slotID))
+        if bagID and slotID then
+            -- Check if slot has item before deleting
+            local texture, itemCount = GetContainerItemInfo(bagID, slotID)
+            CE_Debug("CE_DeleteItem: Slot has item? texture=" .. tostring(texture) .. ", itemCount=" .. tostring(itemCount))
             
             -- Pick up and delete the item
+            CE_Debug("CE_DeleteItem: Calling PickupContainerItem(" .. bagID .. ", " .. slotID .. ")")
             PickupContainerItem(bagID, slotID)
-            if CursorHasItem() then
+            local hasItem = CursorHasItem()
+            CE_Debug("CE_DeleteItem: After PickupContainerItem, cursor has item? " .. tostring(hasItem))
+            if hasItem then
+                CE_Debug("CE_DeleteItem: Calling DeleteCursorItem()")
                 DeleteCursorItem()
+            else
+                CE_Debug("CE_DeleteItem: WARNING - No item on cursor after PickupContainerItem!")
             end
             
             -- Clear cursor state after deletion (item is destroyed, not placed)
@@ -439,19 +473,33 @@ function CE_UseItem()
     local Cursor = ConsoleExperience.cursor
     local button = Cursor.navigationState.currentButton
     
-    if not button then return end
+    if not button then 
+        CE_Debug("CE_UseItem: No button found")
+        return 
+    end
     
     local buttonName = button:GetName()
-    if not buttonName then return end
+    if not buttonName then 
+        CE_Debug("CE_UseItem: No button name")
+        return 
+    end
+    
+    CE_Debug("CE_UseItem: buttonName=" .. buttonName)
     
     -- Check if this is a container item
     if string.find(buttonName, "ContainerFrame%d+Item%d+") then
-        local _, _, bagID = string.find(buttonName, "ContainerFrame(%d+)")
-        if bagID then
-            bagID = tonumber(bagID) - 1
-            local slotID = button:GetID()
+        -- Use Blizzard's method: GetParent():GetID() for bag ID, GetID() for slot ID
+        local parentFrame = button:GetParent()
+        local bagID = parentFrame and parentFrame:GetID()
+        local slotID = button:GetID()
+        CE_Debug("CE_UseItem: Using Blizzard method - parentFrame=" .. (parentFrame and parentFrame:GetName() or "nil") .. ", bagID=" .. tostring(bagID) .. ", slotID=" .. tostring(slotID))
+        if bagID and slotID then
+            -- Check if slot has item before using
+            local texture, itemCount = GetContainerItemInfo(bagID, slotID)
+            CE_Debug("CE_UseItem: Slot has item? texture=" .. tostring(texture) .. ", itemCount=" .. tostring(itemCount))
             
             -- Use the item directly without picking it up
+            CE_Debug("CE_UseItem: Calling UseContainerItem(" .. bagID .. ", " .. slotID .. ")")
             UseContainerItem(bagID, slotID)
             
             
@@ -507,23 +555,36 @@ function CE_PickupItem()
     local Cursor = ConsoleExperience.cursor
     local button = Cursor.navigationState.currentButton
     
-    if not button then return end
+    if not button then 
+        CE_Debug("CE_PickupItem: No button found")
+        return 
+    end
     
     local buttonName = button:GetName()
-    if not buttonName then return end
-    local id = button:GetID()
+    if not buttonName then 
+        CE_Debug("CE_PickupItem: No button name")
+        return 
+    end
+    CE_Debug("CE_PickupItem: buttonName=" .. buttonName)
     
     local pickedUpTexture = nil
     
     -- Handle different button types
     if string.find(buttonName, "ContainerFrame%d+Item%d+") then
-        -- Bag item
-        local _, _, bagID = string.find(buttonName, "ContainerFrame(%d+)")
-        if bagID then
-            bagID = tonumber(bagID) - 1
+        -- Bag item - use Blizzard's method: GetParent():GetID() for bag ID, GetID() for slot ID
+        local parentFrame = button:GetParent()
+        local bagID = parentFrame and parentFrame:GetID()
+        local slotID = button:GetID()
+        CE_Debug("CE_PickupItem: Using Blizzard method - parentFrame=" .. (parentFrame and parentFrame:GetName() or "nil") .. ", bagID=" .. tostring(bagID) .. ", slotID=" .. tostring(slotID))
+        if bagID and slotID then
             -- Get the item texture before picking up
-            pickedUpTexture = GetContainerItemInfo(bagID, id)
-            PickupContainerItem(bagID, id)
+            pickedUpTexture = GetContainerItemInfo(bagID, slotID)
+            CE_Debug("CE_PickupItem: Slot has item? texture=" .. tostring(pickedUpTexture))
+            CE_Debug("CE_PickupItem: Calling PickupContainerItem(" .. bagID .. ", " .. slotID .. ")")
+            PickupContainerItem(bagID, slotID)
+            CE_Debug("CE_PickupItem: After PickupContainerItem, cursor has item? " .. tostring(CursorHasItem() or CursorHasSpell()))
+        else
+            CE_Debug("CE_PickupItem: ERROR - Could not get bagID or slotID from parent/button")
         end
     elseif string.find(buttonName, "Character[A-Za-z0-9]+Slot") then
         -- Equipment slot

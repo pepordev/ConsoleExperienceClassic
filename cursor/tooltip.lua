@@ -230,12 +230,6 @@ function Tooltip:Initialize()
             actions = {{icon = "a", prompt = "Select"}, {icon = "b", prompt = "Buy"}},
             bindings = {{key = "1", action = "CE_CURSOR_CLICK_LEFT"}, {key = "4", action = "CE_CURSOR_CLICK_RIGHT"}}
         },
-        -- Loot buttons - B = Loot (right click for auto-loot)
-        {
-            pattern = "LootButton%d+",
-            actions = {{icon = "a", prompt = "Select"}, {icon = "b", prompt = "Loot"}},
-            bindings = {{key = "1", action = "CE_CURSOR_CLICK_LEFT"}, {key = "4", action = "CE_CURSOR_CLICK_RIGHT"}}
-        },
         -- Bank items - B = Withdraw
         {
             pattern = "BankFrameItem%d+",
