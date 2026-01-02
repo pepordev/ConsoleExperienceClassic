@@ -588,11 +588,15 @@ function CE_PickupItem()
         end
     elseif string.find(buttonName, "Character[A-Za-z0-9]+Slot") then
         -- Equipment slot
-        pickedUpTexture = GetInventoryItemTexture("player", id)
-        PickupInventoryItem(id)
+        local slotId = button:GetID()
+        if slotId then
+            pickedUpTexture = GetInventoryItemTexture("player", slotId)
+            PickupInventoryItem(slotId)
+        end
     elseif string.find(buttonName, "SpellButton%d+") then
         -- Spellbook spell
         if SpellBookFrame and SpellBookFrame.bookType then
+            local id = button:GetID()
             local spellID = id
             if SpellBookFrame.bookType ~= BOOKTYPE_PET then
                 spellID = id + SpellBookFrame.selectedSkillLineOffset + 
@@ -604,11 +608,15 @@ function CE_PickupItem()
         end
     elseif string.find(buttonName, "MacroButton%d+") then
         -- Macro button
-        local macroName, macroTexture = GetMacroInfo(id)
-        if macroTexture then
-            pickedUpTexture = macroTexture
+        local _, _, buttonNum = string.find(buttonName, "MacroButton(%d+)")
+        local id = tonumber(buttonNum)
+        if id then
+            local macroName, macroTexture = GetMacroInfo(id)
+            if macroTexture then
+                pickedUpTexture = macroTexture
+            end
+            PickupMacro(id)
         end
-        PickupMacro(id)
     elseif string.find(buttonName, "CEPlacementButton%d+") then
         -- Placement frame button - use action slot from button
         local actionSlot = button.actionSlot
