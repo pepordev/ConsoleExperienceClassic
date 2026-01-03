@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.5.3](https://github.com/pepordev/ConsoleExperienceClassic/compare/v0.5.2...v0.5.3) (2026-01-03)
+
+
+### Bug Fixes
+
+* correct macro ([1cf1e46](https://github.com/pepordev/ConsoleExperienceClassic/commit/1cf1e4601c427acfc8b1152b4eace0d316eb7f55))
+* correct spellbook ([aee56cc](https://github.com/pepordev/ConsoleExperienceClassic/commit/aee56cc1477555ad80c853c1be3f98225a0d0c1f))
+* set interact macro to RT+LB by default and crosshair position to offset Y 50 ([6ecc6ab](https://github.com/pepordev/ConsoleExperienceClassic/commit/6ecc6aba93ec0b8b66709cbf558b244bfc6dff88))
+
 ## [0.5.2](https://github.com/pepordev/ConsoleExperienceClassic/compare/v0.5.1...v0.5.2) (2026-01-01)
 
 
