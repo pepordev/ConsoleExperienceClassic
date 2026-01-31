@@ -3767,8 +3767,8 @@ function Config:UpdateActionBarLayout()
                 if appearance == "modern" then
                     -- Modern: Larger icon to better fill the circular overlay
                     -- Increase size slightly to eliminate gaps
-                    icon:SetWidth(buttonSize * 0.70)  -- 70% of button size
-                    icon:SetHeight(buttonSize * 0.70)  -- Square for better fit
+                    icon:SetWidth(buttonSize * 0.84)  -- 70% of button size
+                    icon:SetHeight(buttonSize * 0.84)  -- Square for better fit
                 else
                     icon:SetWidth(buttonSize - 4)
                     icon:SetHeight(buttonSize - 4)

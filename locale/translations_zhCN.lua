@@ -144,6 +144,9 @@ ConsoleExperience_translation["zhCN"] = {
     ["Reset Layout"] = "重置布局",
     ["Reset"] = "重置",
     ["Auto-update spell ranks"] = "自动更新技能等级",
+    ["When enabled, spells on action bars will automatically be updated to the highest rank when you learn a new spell rank."] = "启用后，当你学习新的技能等级时，动作条上的技能将自动更新为最高等级。",
+    ["Use travel form bar in prowl"] = "潜行时使用旅行形态动作条",
+    ["When enabled, druids in cat form will use the travel form action bar when prowl/stealth is active."] = "启用后，德鲁伊在猎豹形态下潜行时将使用旅行形态动作条。",
     ["Update Spell Ranks"] = "更新技能等级",
     ["Manually update all spells on action bars to their highest learned rank."] = "手动将动作条上的所有技能更新到已学习的最高等级。",
     ["Reset all action bar settings to defaults."] = "将所有动作条设置重置为默认值。",
@@ -348,6 +351,7 @@ ConsoleExperience_translation["zhCN"] = {
     ["LFG"] = "组队",
     ["Options"] = "选项",
     ["Action Bar Bindings"] = "动作条绑定",
+    ["CE Options"] = "手柄设置",
 
     -- Fallback: target nearest enemy if Interact.dll is not loaded
     ["Interact.dll not loaded - using TargetNearestEnemy()] as fallback."] = "Interact.dll 未加载 - 使用 TargetNearestEnemy() 作为备选方案。",
@@ -365,6 +369,7 @@ ConsoleExperience_translation["zhCN"] = {
     
     -- ConsoleExperienceClassic - Tooltip Module
     ["Status"] = "状态",
+    ["Status: "] = "状态: ",
     ["Enabled"] = "已启用",
     ["Disabled"] = "已禁用",
     ["Current: "] = "当前: ",
@@ -387,4 +392,5 @@ ConsoleExperience_translation["zhCN"] = {
     ["Attach"] = "添加",
     ["Deposit"] = "寄存",
     ["TextInput"] = "文本输入",
+    ["TextInput: "] = "文本输入: ",
 }

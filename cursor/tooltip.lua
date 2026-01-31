@@ -729,7 +729,7 @@ function Tooltip:ShowButtonTooltip(button)
         -- Handle EditBox specially
         if elementType == "editbox" then
             GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
-            local label = button.label or "Text Input"
+            local label = button.label or L("Text Input")
             local currentText = button:GetText() or ""
             GameTooltip:SetText(tostring(label))
             if currentText ~= "" then

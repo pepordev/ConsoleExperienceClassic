@@ -868,7 +868,7 @@ function ActionBars:ApplyButtonAppearance(button)
         overlay:SetWidth(overlaySize)
         overlay:SetHeight(overlaySize)
         overlay:ClearAllPoints()
-        overlay:SetPoint("TOPLEFT", button, "TOPLEFT", -3, 3)
+        overlay:SetPoint("CENTER", button, "CENTER", -buttonSize * 0.02, 0)
         overlay:SetVertexColor(1.0, 1.0, 1.0, 1.0)
         overlay:Show()
         
@@ -896,7 +896,7 @@ function ActionBars:ApplyButtonAppearance(button)
             highlightTex:SetHeight(overlaySize)
             highlightTex:ClearAllPoints()
             highlightTex:SetBlendMode("BLEND")
-            highlightTex:SetPoint("TOPLEFT", button, "TOPLEFT", -3, 3)
+            highlightTex:SetPoint("CENTER", button, "CENTER", -buttonSize * 0.02, 0)
             button:SetHighlightTexture(highlightTex)
         end
         
@@ -931,12 +931,12 @@ function ActionBars:ApplyButtonAppearance(button)
         
         -- Icon size and position for modern
         if icon then
-            icon:SetWidth(buttonSize * 0.65)
-            icon:SetHeight(buttonSize * 0.65)
+            icon:SetWidth(buttonSize * 0.84)
+            icon:SetHeight(buttonSize * 0.84)
             icon:ClearAllPoints()
             -- Move icon slightly to the left (negative X offset)
             icon:SetPoint("CENTER", button, "CENTER", -buttonSize * 0.02, 0)
-            icon:SetTexCoord(0, 1, 0, 1)
+            icon:SetTexCoord(0.12, 0.88, 0.12, 0.88)
         end
         
         -- Flash texture (red overlay when attacking) - use circular texture
@@ -955,8 +955,8 @@ function ActionBars:ApplyButtonAppearance(button)
 
         -- Active frame glow/border - use circular textures for modern
         if button.activeFrame then
-            local iconSize = buttonSize * 0.65
-            local glowSize = iconSize * 1.2
+            local iconSize = buttonSize * 0.84
+            local glowSize = iconSize * 1.15
             
             if button.activeFrame.glow then
                 button.activeFrame.glow:SetTexture("Interface\\AddOns\\ConsoleExperienceClassic\\textures\\actionbars\\serenity")
@@ -2404,6 +2404,7 @@ function ActionBars:UpdateSideBars()
     local rightEnabled = config:Get("sideBarRightEnabled")
     local leftCount = config:Get("sideBarLeftButtons") or 3
     local rightCount = config:Get("sideBarRightButtons") or 3
+    local scaledButtonSize = buttonSize * scale  -- The actual space occupied by the scaled button
     
     -- Clamp counts
     if leftCount < 1 then leftCount = 1 end
@@ -2449,8 +2450,8 @@ function ActionBars:UpdateSideBars()
         -- Update icon size
         if button.icon then
             if appearance == "modern" then
-                button.icon:SetWidth(buttonSize * 0.70)
-                button.icon:SetHeight(buttonSize * 0.70)
+                button.icon:SetWidth(buttonSize * 0.84)
+                button.icon:SetHeight(buttonSize * 0.84)
             else
                 button.icon:SetWidth(buttonSize - 4)
                 button.icon:SetHeight(buttonSize - 4)
@@ -2493,9 +2494,9 @@ function ActionBars:UpdateSideBars()
     if leftEnabled then
         -- Use padding as center-to-center distance (same as main action bar)
         local totalHeight = padding * (leftCount - 1) + buttonSize
-        self.sideBarLeftFrame:SetWidth(buttonSize)
+        self.sideBarLeftFrame:SetWidth(scaledButtonSize)
         self.sideBarLeftFrame:SetHeight(totalHeight)
-        self.sideBarLeftFrame:SetScale(scale)
+        self.sideBarLeftFrame:SetScale(1.0)
         self.sideBarLeftFrame:ClearAllPoints()
         self.sideBarLeftFrame:SetPoint("LEFT", UIParent, "LEFT", 5, 0)
         self.sideBarLeftFrame:Show()
@@ -2533,9 +2534,9 @@ function ActionBars:UpdateSideBars()
     if rightEnabled then
         -- Use padding as center-to-center distance (same as main action bar)
         local totalHeight = padding * (rightCount - 1) + buttonSize
-        self.sideBarRightFrame:SetWidth(buttonSize)
+        self.sideBarRightFrame:SetWidth(scaledButtonSize)
         self.sideBarRightFrame:SetHeight(totalHeight)
-        self.sideBarRightFrame:SetScale(scale)
+        self.sideBarRightFrame:SetScale(1.0)
         self.sideBarRightFrame:ClearAllPoints()
         self.sideBarRightFrame:SetPoint("RIGHT", UIParent, "RIGHT", -5, 0)
         self.sideBarRightFrame:Show()

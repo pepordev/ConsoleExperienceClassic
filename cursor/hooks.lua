@@ -488,6 +488,12 @@ end
 function Hooks:HookFrame(frame, frameName)
     if not frame or frame.ceHooked then return end
     
+    -- Check whether the frame supports the GetScript and SetScript methods
+    if not frame.GetScript or not frame.SetScript then
+        CE_Debug("Hooks: Skip hooking " .. (frame:GetName() or "Unknown") .. " - script methods not supported")
+        return 
+    end
+    
     local frameNameStr = frame:GetName() or "Unknown"
     CE_Debug("Hooks: Hooking frame " .. frameNameStr)
     
@@ -502,7 +508,7 @@ function Hooks:HookFrame(frame, frameName)
         end
         
         -- Initialize cursor on this frame
-        Hooks:OnFrameShow(frame)
+        Hooks:OnFrameShow(this)
     end)
     
     frame:SetScript("OnHide", function()
@@ -513,7 +519,7 @@ function Hooks:HookFrame(frame, frameName)
         end
         
         -- Handle frame hide
-        Hooks:OnFrameHide(frame)
+        Hooks:OnFrameHide(this)
     end)
     
     frame.ceHooked = true

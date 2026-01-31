@@ -144,6 +144,9 @@ ConsoleExperience_translation["esES"] = {
     ["Reset Layout"] = "Restablecer Diseño",
     ["Reset"] = "Restablecer",
     ["Auto-update spell ranks"] = "Actualizar rangos automáticamente",
+    ["When enabled, spells on action bars will automatically be updated to the highest rank when you learn a new spell rank."] = "Cuando está activado, los hechizos en las barras de acción se actualizarán automáticamente al rango más alto cuando aprendas un nuevo rango de hechizo.",
+    ["Use travel form bar in prowl"] = "Usar barra de forma de viaje en acecho",
+    ["When enabled, druids in cat form will use the travel form action bar when prowl/stealth is active."] = "Cuando está activado, los druidas en forma de gato usarán la barra de acción de forma de viaje cuando el acecho/ sigilo esté activo.",
     ["Update Spell Ranks"] = "Actualizar Rangos",
     ["Manually update all spells on action bars to their highest learned rank."] = "Actualiza manualmente todos los hechizos de las barras de acción a su rango más alto aprendido.",
     ["Reset all action bar settings to defaults."] = "Restablece todas las configuraciones de barras de acción a los valores por defecto.",
@@ -348,6 +351,7 @@ ConsoleExperience_translation["esES"] = {
     ["LFG"] = "Búsqueda",
     ["Options"] = "Opciones",
     ["Action Bar Bindings"] = "Vinculaciones de Barra de Acciones",
+    ["CE Options"] = "CE Opciones",
 
     -- Fallback: target nearest enemy if Interact.dll is not loaded
     ["Interact.dll not loaded - using TargetNearestEnemy()] as fallback."] = "Interact.dll no cargado - usando TargetNearestEnemy() como respaldo.",
@@ -365,6 +369,7 @@ ConsoleExperience_translation["esES"] = {
     
     -- ConsoleExperienceClassic - Tooltip Module
     ["Status"] = "Estado",
+    ["Status: "] = "Estado: ",
     ["Enabled"] = "Activado",
     ["Disabled"] = "Desactivado",
     ["Current: "] = "Actual: ",
@@ -387,4 +392,5 @@ ConsoleExperience_translation["esES"] = {
     ["Attach"] = "Adjuntar",
     ["Deposit"] = "Depositar",  
     ["TextInput"] = "Entrada de Texto",
+    ["TextInput: "] = "Entrada de Texto: ",
 }

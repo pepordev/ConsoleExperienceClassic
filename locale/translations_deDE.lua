@@ -144,6 +144,9 @@ ConsoleExperience_translation["deDE"] = {
     ["Reset Layout"] = "Layout zurücksetzen",
     ["Reset"] = "Zurücksetzen",
     ["Auto-update spell ranks"] = "Zauberränge automatisch aktualisieren",
+    ["When enabled, spells on action bars will automatically be updated to the highest rank when you learn a new spell rank."] = "Wenn aktiviert, werden Zauber auf Aktionsleisten automatisch auf den höchsten Rang aktualisiert, wenn du einen neuen Zauberrang lernst.",
+    ["Use travel form bar in prowl"] = "Reisegestalt-Leiste im Schleichen verwenden",
+    ["When enabled, druids in cat form will use the travel form action bar when prowl/stealth is active."] = "Wenn aktiviert, verwenden Druiden in Katzenform die Reisegestalt-Aktionsleiste, wenn Schleichen aktiv ist.",
     ["Update Spell Ranks"] = "Zauberränge aktualisieren",
     ["Manually update all spells on action bars to their highest learned rank."] = "Aktualisiert alle Zauber auf Aktionsleisten manuell auf den höchsten gelernten Rang.",
     ["Reset all action bar settings to defaults."] = "Setzt alle Aktionsleisten-Einstellungen auf Standard zurück.",
@@ -348,6 +351,7 @@ ConsoleExperience_translation["deDE"] = {
     ["LFG"] = "Suchen",
     ["Options"] = "Optionen",
     ["Action Bar Bindings"] = "Aktionsleistenbelegungen",
+    ["CE Options"] = "CE Optionen",
 
     -- Fallback: target nearest enemy if Interact.dll is not loaded
     ["Interact.dll not loaded - using TargetNearestEnemy()] as fallback."] = "Interact.dll nicht geladen - verwende TargetNearestEnemy() als Fallback.",
@@ -365,6 +369,7 @@ ConsoleExperience_translation["deDE"] = {
     
     -- ConsoleExperienceClassic - Tooltip Module
     ["Status"] = "Status",
+    ["Status: "] = "Status: ",
     ["Enabled"] = "Aktiviert",
     ["Disabled"] = "Deaktiviert",
     ["Current: "] = "Aktuell: ",
@@ -387,4 +392,5 @@ ConsoleExperience_translation["deDE"] = {
     ["Attach"] = "Anhängen",
     ["Deposit"] = "Einzahlen",
     ["TextInput"] = "Textingabe",
+    ["TextInput: "] = "Textingabe: ",
 }

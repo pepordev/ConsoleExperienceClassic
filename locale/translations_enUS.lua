@@ -351,6 +351,7 @@ ConsoleExperience_translation["enUS"] = {
     ["LFG"] = "LFG",
     ["Options"] = "Options",
     ["Action Bar Bindings"] = "Action Bar Bindings",
+    ["CE Options"] = "CE Options",
 
     -- Fallback: target nearest enemy if Interact.dll is not loaded
     ["Interact.dll not loaded - using TargetNearestEnemy()] as fallback."] = "Interact.dll not loaded - using TargetNearestEnemy() as fallback.",
@@ -368,6 +369,7 @@ ConsoleExperience_translation["enUS"] = {
     
     -- ConsoleExperienceClassic - Tooltip Module
     ["Status"] = "Status",
+    ["Status: "] = "Status: ",
     ["Enabled"] = "Enabled",
     ["Disabled"] = "Disabled",
     ["Current: "] = "Current: ",
@@ -390,4 +392,5 @@ ConsoleExperience_translation["enUS"] = {
     ["Attach"] = "Attach",
     ["Deposit"] = "Deposit",
     ["TextInput"] = "TextInput",
+    ["TextInput: "] = "TextInput: ",
 }
